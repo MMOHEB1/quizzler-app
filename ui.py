@@ -29,7 +29,7 @@ class QuizInterface:
         self.true_button = Button(
             image=true_image,
             highlightthickness=0,
-            command=quiz_brain.check_answer(True)
+            command=self.is_correct
         )
         self.true_button.grid(row= 2, column=0)
 
@@ -37,7 +37,7 @@ class QuizInterface:
         self.false_button = Button(
             image=false_image,
             highlightthickness=0,
-            command=quiz_brain.check_answer(False)
+            command=self.is_wrong
         )
         self.false_button.grid(row=2, column=1)
 
@@ -47,5 +47,19 @@ class QuizInterface:
         self.window.mainloop()
 
     def get_next_question(self):
+        self.canvas.config(bg="white")
         q_text = self.quiz.next_question()
         self.canvas.itemconfig(self.question_text, text=q_text)
+
+    def is_correct(self):
+        self.give_feedback(self.quiz.check_answer("True"))
+    def is_wrong(self):
+        is_right = self.quiz.check_answer("False")
+        self.give_feedback(is_right)
+
+    def give_feedback(self, is_right):
+        if is_right:
+            self.canvas.config(bg="green")
+        else:
+            self.canvas.config(bg="red")
+        self.window.after(1000, self.get_next_question)
