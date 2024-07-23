@@ -11,8 +11,8 @@ class QuizInterface:
         self.window.title("Quizmaster")
         self.window.config(background=THEME_COLOR, padx=20, pady=20)
 
-        self.label = Label(text=f"Score: 0", fg="white", font=("Helvetica", 16), bg=THEME_COLOR)
-        self.label.grid(row=0, column=1)
+        self.score_label = Label(text=f"Score: {self.quiz.score}", fg="white", font=("Helvetica", 16), bg=THEME_COLOR)
+        self.score_label.grid(row=0, column=1)
 
         self.canvas = Canvas(height=250, width=300,bg="white")
         self.canvas.grid(row=1, column=0, columnspan=2, pady=50)
@@ -48,18 +48,19 @@ class QuizInterface:
 
     def get_next_question(self):
         self.canvas.config(bg="white")
+        self.score_label.config(text=f"Score: {self.quiz.score}")
         q_text = self.quiz.next_question()
         self.canvas.itemconfig(self.question_text, text=q_text)
 
     def is_correct(self):
         self.give_feedback(self.quiz.check_answer("True"))
     def is_wrong(self):
-        is_right = self.quiz.check_answer("False")
-        self.give_feedback(is_right)
+        # is_right = self.quiz.check_answer("False")
+        self.give_feedback(self.quiz.check_answer("False"))
 
     def give_feedback(self, is_right):
         if is_right:
             self.canvas.config(bg="green")
-        else:
+        elif not is_right:
             self.canvas.config(bg="red")
         self.window.after(1000, self.get_next_question)
